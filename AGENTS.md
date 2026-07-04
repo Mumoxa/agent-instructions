@@ -2,89 +2,264 @@
 
 This repository is the single source of truth for all Mumoxa coding-agent instructions, playbooks, standards, roles, prompts, UI rules, QA rules, research rules and handoff rules.
 
-Every AI coding agent working in any Mumoxa GitHub repository must follow these rules before changing code.
+Every AI coding agent working in any Mumoxa GitHub repository must follow this file before changing code. Product repos may add repo-specific rules, but they must not weaken these canonical rules.
 
 ## Rule zero
 
 No hallucination. No invented facts. No duplicated work. No unsupported verification claims. Evidence first, then action.
 
-## Mandatory operating rules
+This means:
 
-1. Read this file before doing any work.
-2. Read the target repository's own `AGENTS.md` before editing.
-3. Treat this repository, `Mumoxa/agent-instructions`, as the canonical instruction home.
-4. Do not use `Mumoxa/ai-agent-squad` as the canonical source for agent instructions.
-5. Do not invent product requirements, architecture, data models, features, user flows, credentials, integrations, test results, build results, security status, performance claims or deployment status.
-6. Source-verify every material claim. If the repo, issue, file, log, test, build output, user instruction or cited source does not prove it, say it is unknown.
-7. Before coding, inspect the existing repo structure, package manager, framework, routes, components, database/schema files, API boundaries, tests, deployment config and styling conventions.
-8. Before making product/UI changes, produce a brief implementation plan and check for duplication against existing components, pages, routes, schemas and utilities.
-9. Prefer small, reviewable patches. Avoid broad rewrites unless the user explicitly requested them and the evidence supports it.
-10. Reuse existing components, utilities, schemas and design-system patterns before adding new ones.
-11. Run the relevant lint, tests, type checks and build commands when available. If they cannot run, document the exact reason.
-12. Finish with a concise handoff: what changed, files touched, verification run, risks, gaps and what should be visually or manually checked.
+- Do not invent product requirements, architecture, data models, features, user flows, credentials, integrations, test results, build results, security status, performance claims or deployment status.
+- Do not claim a command passed unless it was actually run and the output proves it.
+- Do not claim a file, component, route, table, API, database, deployment, issue or PR exists unless it was inspected.
+- Do not duplicate existing code, utilities, schemas, components, routes, prompts, data models or documentation without first searching for existing work.
+- If the evidence is incomplete, say exactly what is known, unknown and assumed.
 
-## Required workflow for every task
+## Canonical repository rule
+
+The canonical instruction source is:
+
+`Mumoxa/agent-instructions/AGENTS.md`
+
+Do not use `Mumoxa/ai-agent-squad` as the canonical source for agent instructions.
+
+`Mumoxa/Agent-OS` is not canonical unless a user explicitly asks for historical Agent-OS work. Shared agent standards, playbooks, role definitions and operating rules belong here.
+
+## Required reading order for every coding agent
+
+For every task in any Mumoxa repo:
+
+1. Read the target repo's root `AGENTS.md`.
+2. Read this canonical file: `Mumoxa/agent-instructions/AGENTS.md`.
+3. Read `COMPREHENSIVE_INSTRUCTIONS.md` in this repo when the work is non-trivial, cross-functional, production-facing, security-sensitive, AI-related, assessment-related, recruitment-related, architecture-related or UI-related.
+4. Inspect the target repo before editing.
+5. Identify the actual stack, package manager, framework, routes, components, styling, database/schema files, API boundaries, tests, deployment config and existing conventions.
+6. Search for duplicate or related functionality before adding anything new.
+7. Make the smallest safe change that satisfies the user request.
+8. Verify the change with available lint, tests, type checks and build checks.
+9. Finish with an evidence-backed handoff.
+
+## Standard task workflow
+
+Every agent must follow this workflow:
 
 1. Restate the requested outcome in practical terms.
-2. Inspect the repo before editing.
-3. Identify affected frontend, backend, database, deployment, security and test surfaces.
-4. Check whether similar functionality already exists.
-5. Make the smallest safe change.
-6. Verify with commands or explain why verification was not possible.
-7. Report only evidence-backed results.
+2. Identify affected surfaces: frontend, backend, database, deployment, security, tests, data, docs and user experience.
+3. Inspect relevant files before proposing or applying changes.
+4. Check for existing implementations, utilities and patterns.
+5. Write a brief plan before code changes, unless the task is a tiny single-file fix.
+6. Implement small, reviewable changes.
+7. Run the most relevant verification commands.
+8. Review the diff against the original request.
+9. Document what changed, what was verified, what remains risky and what requires manual checking.
 
-## UI standards
+## Non-negotiable verification doctrine
 
-When working on UI, produce modern, polished, production-quality interfaces.
+Verification is not optional.
+
+Before finishing, agents must try to run the relevant commands available in the repo, such as:
+
+- dependency install check, when needed;
+- lint;
+- type check;
+- unit tests;
+- integration tests;
+- e2e tests, where available and relevant;
+- build;
+- migration dry-run or schema validation, where relevant;
+- formatting checks;
+- security or dependency checks, where available.
+
+If verification cannot run, the handoff must state:
+
+- which command was attempted or considered;
+- why it could not run;
+- whether this blocks confidence;
+- what a human should run next.
+
+Never replace verification with confidence language.
+
+## UI quality rules
+
+All UI work must aim for modern, polished, production-quality output.
 
 Before coding UI:
 
-- Inspect the existing design system, components, routes, styling and layout conventions.
-- Identify the user flow and propose a brief UI plan.
-- Do not produce generic dashboard/card layouts unless requested.
+- Inspect the existing design system, components, routes, styling, tokens and layout conventions.
+- Identify the user flow.
+- Avoid generic dashboard/card layouts unless explicitly requested.
+- Reuse existing components and design patterns before creating new ones.
 
-UI work must include:
+UI output must include:
 
-- Clean spacing, hierarchy, alignment and responsive behaviour.
-- Accessible contrast, semantic HTML and keyboard-accessible interaction states.
-- Loading, empty, error and success states where relevant.
-- Reusable components over one-off styling.
+- clean spacing;
+- strong hierarchy;
+- good alignment;
+- responsive behaviour;
+- accessible contrast;
+- semantic HTML;
+- keyboard-accessible interactions;
+- focus-visible states;
+- loading states;
+- empty states;
+- error states;
+- success states;
+- sensible microcopy;
+- consistent typography;
+- reusable components over one-off styling.
 
-Avoid dated-looking UI, cramped layouts, weak typography, random colours, dead screens and fake interactivity.
+Avoid dated-looking UI, cramped layouts, weak typography, random colours, fake interactivity, inaccessible controls and dead screens.
 
-## Backend and data standards
+## Backend, data and platform rules
 
-For backend, data and platform work:
+For backend, data, infrastructure and platform work, agents must verify:
 
-- Verify data flow, validation, authentication, authorization, error handling, observability and migration safety.
-- Never fake integrations or pretend external services work without proof.
-- Never expose secrets or log sensitive data.
-- Check rate limits, input validation and safe failure modes.
-- Document migrations, schema changes and rollback risks.
+- data flow;
+- input validation;
+- authentication;
+- authorization;
+- error handling;
+- logging;
+- observability;
+- migration safety;
+- rollback risk;
+- rate limits;
+- external service dependencies;
+- secrets handling;
+- safe failure modes.
 
-## AI, assessment and recruitment standards
+Never fake integrations. Never hardcode secrets. Never log sensitive data. Never pretend a service works without inspecting code, config or runtime evidence.
 
-For AI, assessment, matching, scoring and recruitment products:
+## Security rules
+
+Security-sensitive work must include a threat-aware check of:
+
+- authentication and authorization boundaries;
+- role-based or capability-based access;
+- secrets exposure;
+- dependency and supply-chain risks;
+- injection risks;
+- unsafe file handling;
+- sensitive data logging;
+- rate limiting;
+- unsafe defaults;
+- privacy and POPIA/GDPR-type exposure where relevant;
+- failure modes and escalation paths.
+
+If the task touches user data, candidate data, client data, recruitment data, assessment data or payment/billing data, treat it as sensitive.
+
+## AI, assessment and recruitment product rules
+
+For AI, assessment, matching, scoring, recruitment, career guidance or candidate/client-facing products:
 
 - Protect credibility above speed.
 - No fake metrics.
-- No fabricated candidate, client, employer, salary or market facts.
+- No fabricated candidate, client, employer, salary, market, skills or career facts.
 - No unsupported scoring logic.
 - No hidden bias assumptions.
-- Explain what is measured, what is inferred and what is unknown.
+- No black-box claims without explaining what is measured, inferred and unknown.
+- Keep assessment logic auditable.
+- Keep matching logic explainable.
+- Keep candidate data privacy-aware.
+- Avoid claims that imply validation unless validation evidence exists.
+- Distinguish demo behaviour from production behaviour.
 
-## Tool-specific expectation
+## Architecture rules
 
-If using Claude Code, Codex, Cursor, Copilot, OpenCode, Gemini, Windsurf, Cline, Cody, Tabnine or similar tools, configure the tool to read the target repo's `AGENTS.md` first and then this canonical `Mumoxa/agent-instructions/AGENTS.md`.
+For architecture-impacting work:
 
-If there is a conflict, this canonical file takes precedence unless the target repository explicitly documents a narrower project-specific exception.
+- Identify the boundary being changed.
+- Identify upstream and downstream systems.
+- Document data contracts.
+- Prefer reversible changes.
+- Use ADR-style notes for major decisions.
+- Avoid broad rewrites unless specifically requested and justified by evidence.
+- Check deployment, rollback, data migration and observability implications.
+- Do not introduce new frameworks, vendors or services without explicit justification.
 
-## Final handoff format
+## Documentation rules
+
+Documentation must be accurate, current and useful.
+
+Do not write aspirational docs as if work is complete. Use clear labels:
+
+- Implemented;
+- Partially implemented;
+- Planned;
+- Unknown;
+- Needs verification;
+- Demo only;
+- Production ready only if verified.
+
+Docs must not conceal gaps, risks or missing verification.
+
+## Code review rules
+
+Every code review must check:
+
+- request alignment;
+- existing pattern reuse;
+- duplication;
+- correctness;
+- edge cases;
+- accessibility for UI;
+- security;
+- performance;
+- data integrity;
+- tests;
+- build impact;
+- migration impact;
+- documentation impact;
+- whether claims are evidence-backed.
+
+## Required final handoff format
 
 Every agent must finish with:
 
-- Summary of changes.
-- Files changed.
-- Verification commands run and results.
-- Risks or gaps.
-- Manual or visual checks still needed.
+1. Summary of changes.
+2. Files changed.
+3. Verification commands run and results.
+4. Risks or gaps.
+5. Manual or visual checks still needed.
+6. Any assumptions made.
+
+If verification was not run, say so plainly.
+
+## Tool-specific expectations
+
+Agents using Claude Code, Codex, Cursor, GitHub Copilot, OpenCode, Gemini, Windsurf, Cline, Cody, Tabnine or similar tools must configure or prompt the tool to read:
+
+1. the target repo's `AGENTS.md`;
+2. `Mumoxa/agent-instructions/AGENTS.md`;
+3. `Mumoxa/agent-instructions/COMPREHENSIVE_INSTRUCTIONS.md` for non-trivial work.
+
+Do not rely on tools automatically discovering the rules. Put the reading requirement in the task prompt.
+
+## Comprehensive instruction map
+
+The uploaded instruction pack included a large codex-style operating playbook covering:
+
+- 25 universal operating axioms;
+- verification doctrine and SDET spine;
+- decision hygiene and pre-mortems;
+- cognitive bias and behavioural science;
+- persuasion, influence and nudging;
+- group dynamics and communication psychology;
+- founder, CTO, VP, engineering, product, design, data, ML, platform, security, QA, GTM, legal, finance and people roles;
+- product management, UX research, design, architecture, data modelling, prompt engineering, agent handoffs, DevOps/SRE, cybersecurity, QA, documentation, code review, incidents and risk;
+- communication, meetings, experimentation, hiring, performance, promotion, technical debt, migrations, cost and vendor management;
+- shark-tank critical review, red-team thinking, anti-patterns and emerging methodologies;
+- multi-tool adapters for AI coding tools.
+
+The full instruction index is maintained in `COMPREHENSIVE_INSTRUCTIONS.md`.
+
+## Update discipline
+
+When these instructions change:
+
+1. Update this file first.
+2. Update `COMPREHENSIVE_INSTRUCTIONS.md` if the scope or section map changes.
+3. Update target repo pointers only if the canonical path changes.
+4. Do not duplicate the same long instruction body across product repos.
+5. Keep product repos lightweight and canonical instructions centralized here.
